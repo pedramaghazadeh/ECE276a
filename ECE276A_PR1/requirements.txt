@@ -1,5 +1,0 @@
-jax
-numpy
-matplotlib
-tqdm
-transforms3d
