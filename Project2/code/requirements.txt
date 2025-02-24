@@ -4,3 +4,5 @@ numpy
 jax
 open3d
 trsansforms3d
+opencv-python
+scipy

@@ -6,7 +6,17 @@ import transforms3d as t3d
 
 from scipy.spatial import KDTree
 from tqdm import tqdm
-from utils import read_canonical_model, load_pc, visualize_icp_result
+# from .utils import read_canonical_model, load_pc, visualize_icp_result
+
+def sync_time_stamps(t1, t2):
+    t1_synced = []
+    ind = 0
+    for i in range(len(t1)):
+        while(t2[ind] < t1[i] and ind < len(t2) - 1):
+            ind += 1
+        t1_synced.append(ind)
+    return np.array(t1_synced)
+
 
 def Kabsch(m, z):
     # Kabsch algorithm
@@ -47,7 +57,7 @@ def ICP(z, m, R_0=None, p_0=None):
 
     best_R, best_p = np.eye(3), np.zeros(3)
 
-    yaw_angles = np.linspace(-180, 180, 7)
+    yaw_angles = np.linspace(-90, 90, 11)
     min_err = np.inf
 
     if R_0 is not None:

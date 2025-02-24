@@ -73,9 +73,10 @@ def test_bresenham2D():
   print("1000 raytraces: --- %s seconds ---" % (time.time() - start_time))
 
 
-def show_lidar():
+def show_lidar(ranges=None):
   angles = np.arange(-135,135.25,0.25)*np.pi/180.0
-  ranges = np.load("test_ranges.npy")
+  if ranges is None:
+    ranges = np.load("test_ranges.npy")
   plt.figure()
   ax = plt.subplot(111, projection='polar')
   ax.plot(angles, ranges)
@@ -90,7 +91,7 @@ def show_lidar():
 def plot_map(mapdata, cmap="binary"):
   plt.imshow(mapdata.T, origin="lower", cmap=cmap)
 
-def test_map():
+def test_map(ranges=None):
   # Initialize a grid map
   MAP = {}
   MAP['res'] = np.array([0.05, 0.05])    # meters
@@ -100,9 +101,10 @@ def test_map():
   isEven = MAP['size']%2==0
   MAP['size'][isEven] = MAP['size'][isEven]+1 # Make sure that the map has an odd size so that the origin is in the center cell
   MAP['map'] = np.zeros(MAP['size'])
-  
+
   # Load Lidar scan
-  ranges = np.load("./test_ranges.npy")
+  if ranges is None:
+    ranges = np.load("./test_ranges.npy")
   angles = np.arange(-135,135.25,0.25)*np.pi/180.0
   valid1 = np.logical_and((ranges < 30),(ranges> 0.1))
   
@@ -130,6 +132,7 @@ def test_map():
   plt.title('Grid map')
   
   plt.show()
+  return MAP
 
 if __name__ == '__main__':
   show_lidar()
