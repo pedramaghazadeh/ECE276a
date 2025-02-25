@@ -57,14 +57,14 @@ def ICP(z, m, R_0=None, p_0=None):
 
     best_R, best_p = np.eye(3), np.zeros(3)
 
-    yaw_angles = np.linspace(-90, 90, 11)
+    yaw_angles = np.linspace(-30, 30, 15)
     min_err = np.inf
 
     if R_0 is not None:
         m_hat = (R_0 @ z.T).T + p_0
         z_assoc = np.zeros_like(m)
 
-        for _ in range(50): 
+        for _ in range(70):
             # Associate points
             tree = KDTree(m_hat)
             dist, idx = tree.query(m)
@@ -82,32 +82,32 @@ def ICP(z, m, R_0=None, p_0=None):
                 min_err = err
                 best_R = R
                 best_p = p
-    else:
-        for yaw in tqdm(yaw_angles):
-            R_0 = t3d.euler.euler2mat(0, 0, np.radians(yaw))
-            p_0 = np.mean(m, axis=0) - np.mean(z, axis=0)
 
-            m_hat = (R_0 @ z.T).T + p_0
-            z_assoc = np.zeros_like(m)
+    for yaw in yaw_angles:
+        R_0 = t3d.euler.euler2mat(0, 0, np.radians(yaw))
+        p_0 = np.mean(m, axis=0) - np.mean(z, axis=0)
 
-            for _ in range(50): 
-                # Associate points
-                tree = KDTree(m_hat)
-                dist, idx = tree.query(m)
-                z_assoc = z[idx]
+        m_hat = (R_0 @ z.T).T + p_0
+        z_assoc = np.zeros_like(m)
 
-                R, p = Kabsch(m, z_assoc)
+        for _ in range(70):
+            # Associate points
+            tree = KDTree(m_hat)
+            dist, idx = tree.query(m)
+            z_assoc = z[idx]
 
-                p = p.reshape(3)
-                m_hat = (R @ z.T).T + p
+            R, p = Kabsch(m, z_assoc)
 
-                m_temp = (R @ z_assoc.T).T + p
-                err = np.sum(np.linalg.norm(m - m_temp, axis=1))
+            p = p.reshape(3)
+            m_hat = (R @ z.T).T + p
 
-                if err < min_err:
-                    min_err = err
-                    best_R = R
-                    best_p = p
+            m_temp = (R @ z_assoc.T).T + p
+            err = np.sum(np.linalg.norm(m - m_temp, axis=1))
+
+            if err < min_err:
+                min_err = err
+                best_R = R
+                best_p = p
 
     return best_R, best_p
 
