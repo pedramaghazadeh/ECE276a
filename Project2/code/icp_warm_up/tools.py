@@ -1,12 +1,8 @@
-import jax
-
-import jax.numpy as np
 import numpy as np
 import transforms3d as t3d
 
 from scipy.spatial import KDTree
 from tqdm import tqdm
-# from .utils import read_canonical_model, load_pc, visualize_icp_result
 
 def sync_time_stamps(t1, t2):
     t1_synced = []
@@ -45,6 +41,7 @@ def Kabsch(m, z):
     p = m_bar - R @ z_bar
 
     return R, p
+
 
 def ICP(z, m, R_0=None, p_0=None):
     # ICP algorithm
@@ -110,21 +107,3 @@ def ICP(z, m, R_0=None, p_0=None):
                 best_p = p
 
     return best_R, best_p
-
-if __name__ == '__main__':
-    obj_name = 'drill' # drill or liq_container
-    num_pc = 4 # number of point clouds
-
-    source_pc = read_canonical_model(obj_name)
-
-    for i in range(num_pc):
-        target_pc = load_pc(obj_name, i)
-        R, p = ICP(source_pc, target_pc)
-
-        # Estimated_pose, you need to estimate the pose with ICP
-        pose = np.eye(4)
-        pose[:3, :3] = R
-        pose[:3, 3] = p
-
-        # Visualize the estimated result
-        visualize_icp_result(source_pc, target_pc, pose)
