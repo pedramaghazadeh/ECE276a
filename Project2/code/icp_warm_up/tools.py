@@ -43,7 +43,7 @@ def Kabsch(m, z):
     return R, p
 
 
-def ICP(z, m, R_0=None, p_0=None):
+def ICP(z, m, R_0=None, p_0=None, iter=70, init_guesses=15, max_yaw=30):
     # ICP algorithm
     # z: source point cloud
     # m: target point cloud
@@ -54,7 +54,7 @@ def ICP(z, m, R_0=None, p_0=None):
 
     best_R, best_p = np.eye(3), np.zeros(3)
 
-    yaw_angles = np.linspace(-30, 30, 15)
+    yaw_angles = np.linspace(-max_yaw, max_yaw, init_guesses)
     min_err = np.inf
 
     if R_0 is not None:
@@ -87,7 +87,7 @@ def ICP(z, m, R_0=None, p_0=None):
         m_hat = (R_0 @ z.T).T + p_0
         z_assoc = np.zeros_like(m)
 
-        for _ in range(70):
+        for _ in range(iter):
             # Associate points
             tree = KDTree(m_hat)
             dist, idx = tree.query(m)
