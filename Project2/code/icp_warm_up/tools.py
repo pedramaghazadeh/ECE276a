@@ -81,7 +81,7 @@ def ICP(z, m, R_0=None, p_0=None, iter=70, init_guesses=15, max_yaw=30):
                 best_p = p
 
     for yaw in yaw_angles:
-        R_0 = t3d.euler.euler2mat(0, 0, np.radians(yaw))
+        R_0 = t3d.euler.euler2mat(0, np.radians(yaw), np.radians(yaw))
         p_0 = np.mean(m, axis=0) - np.mean(z, axis=0)
 
         m_hat = (R_0 @ z.T).T + p_0
