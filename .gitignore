@@ -171,3 +171,4 @@ cython_debug/
 .pypirc
 Project2/data/*
 Project2/dataRGBD/*
+Project3/data/*
