@@ -38,7 +38,7 @@ def load_data(file_name: str):
     return v_t,w_t,timestamps,features,K_l,K_r,extL_T_imu,extR_T_imu
 
 
-def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False):
+def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False, features=None):
     '''
     function to visualize the trajectory in 2D
     Input:
@@ -49,9 +49,12 @@ def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False):
     fig,ax = plt.subplots(figsize=(5,5))
     n_pose = pose.shape[0]
     ax.plot(pose[:,0,3],pose[:,1,3],'r-',label=path_name)
-    ax.scatter(pose[0,0,3],pose[0,1,3],marker='s',label="start")
-    ax.scatter(pose[-1,0,3],pose[-1,1,3],marker='o',label="end")
-  
+    ax.scatter(pose[0,0,3],pose[0,1,3], marker='s',label="start")
+    ax.scatter(pose[-1,0,3],pose[-1,1,3], marker='o',label="end")
+
+    if features is not None:
+      ax.scatter(features[:, 0],features[:, 1], marker='o', label="features", s=10)
+
     if show_ori:
         select_ori_index = list(range(0,n_pose,max(int(n_pose/50), 1)))
         yaw_list = []
