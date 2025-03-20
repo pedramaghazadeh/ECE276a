@@ -53,8 +53,10 @@ def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False, features=
     ax.scatter(pose[-1,0,3],pose[-1,1,3], marker='o',label="end")
 
     if features is not None:
-      ax.scatter(features[:, 0],features[:, 1], marker='o', label="features", s=10)
+      ax.scatter(features[:, 0],features[:, 1], marker='o', label="features", s=1)
 
+    ax.set_xlim([-50, 200])
+    ax.set_ylim([-100, 100])
     if show_ori:
         select_ori_index = list(range(0,n_pose,max(int(n_pose/50), 1)))
         yaw_list = []
