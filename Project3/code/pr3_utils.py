@@ -38,7 +38,7 @@ def load_data(file_name: str):
     return v_t,w_t,timestamps,features,K_l,K_r,extL_T_imu,extR_T_imu
 
 
-def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False, features=None):
+def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False, features=None, features_init=None, pose_init=None):
     '''
     function to visualize the trajectory in 2D
     Input:
@@ -48,12 +48,18 @@ def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False, features=
     '''
     fig,ax = plt.subplots(figsize=(5,5))
     n_pose = pose.shape[0]
-    ax.plot(pose[:,0,3],pose[:,1,3],'r-',label=path_name)
-    ax.scatter(pose[0,0,3],pose[0,1,3], marker='s',label="start")
-    ax.scatter(pose[-1,0,3],pose[-1,1,3], marker='o',label="end")
+    ax.plot(pose[:,0,3],pose[:,1,3],'r-',label="Poses", c='r')
+    ax.scatter(pose[0,0,3],pose[0,1,3], marker='s',label="Start", s=10)
+    ax.scatter(pose[-1,0,3],pose[-1,1,3], marker='o',label="End", s=10)
 
     if features is not None:
-      ax.scatter(features[:, 0],features[:, 1], marker='o', label="features", s=1)
+      ax.scatter(features[:, 0],features[:, 1], marker='o', label="Features", s=1, c='b')
+    
+    if features_init is not None:
+      ax.scatter(features_init[:, 0],features_init[:, 1], marker='o', label="Initial guesses", s=1, c='g')
+
+    if pose_init is not None:
+      ax.plot(pose_init[:,0,3],pose_init[:,1,3],'r-',label="Initial poses", c='purple')
 
     ax.set_xlim([-50, 200])
     ax.set_ylim([-100, 100])
@@ -69,7 +75,7 @@ def visualize_trajectory_2d(pose, path_name="Unknown", show_ori=False, features=
         dy = np.sin(yaw_list)
         dx,dy = [dx,dy]/np.sqrt(dx**2+dy**2)
         ax.quiver(pose[select_ori_index,0,3],pose[select_ori_index,1,3],dx,dy,\
-            color="b",units="xy",width=1, headlength=0.002,headaxislength=0.001)
+            color="y",units="xy",width=1, headlength=0.002,headaxislength=0.001)
             
     
     ax.set_xlabel('x')
